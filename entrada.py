@@ -1,48 +1,50 @@
-from math import sqrt
+from math import isfinite
 
 
 def ler_coeficiente(nome):
-    return float(input(f"Informe o coeficiente {nome}: "))
+    """Le um coeficiente numerico e finito."""
+    while True:
+        try:
+            texto = input(f"Informe o coeficiente {nome}: ").strip().replace(",", ".")
+        except (EOFError, KeyboardInterrupt):
+            print("\nEntrada cancelada pelo usuario.")
+            return None
+
+        if not texto:
+            print("Informe um valor.")
+            continue
+
+        try:
+            valor = float(texto)
+        except ValueError:
+            print("Valor inválido. Digite um número, como 2,5 ou -3.")
+            continue
+
+        if not isfinite(valor):
+            print("O valor precisa ser um numero finito.")
+            continue
+
+        return valor
 
 
-def resolver_equacao(a, b, c):
-    delta = b ** 2 - 4 * a * c
-
-    if delta < 0:
-        return delta, []
-
-    if delta == 0:
-        return delta, [-b / (2 * a)]
-
-    raiz_delta = sqrt(delta)
-    return delta, [
-        (-b + raiz_delta) / (2 * a),
-        (-b - raiz_delta) / (2 * a),
-    ]
-
-
-def main():
+def ler_coeficientes():
+    """Le os coeficientes de uma equacao do segundo grau."""
     print("Equacao do segundo grau: ax^2 + bx + c = 0")
-    a = ler_coeficiente("a")
 
-    while a == 0:
-        print("O coeficiente a deve ser diferente de zero.")
+    while True:
         a = ler_coeficiente("a")
+        if a is None:
+            return None
+        if a != 0:
+            break
+        print("O coeficiente a deve ser diferente de zero.")
 
     b = ler_coeficiente("b")
+    if b is None:
+        return None
+
     c = ler_coeficiente("c")
-    delta, raizes = resolver_equacao(a, b, c)
+    if c is None:
+        return None
 
-    print(f"Delta: {delta}")
-
-    if not raizes:
-        print("A equacao nao possui raizes reais.")
-    elif len(raizes) == 1:
-        print(f"Raiz unica: {raizes[0]}")
-    else:
-        print(f"Raiz 1: {raizes[0]}")
-        print(f"Raiz 2: {raizes[1]}")
-
-
-if __name__ == "__main__":
-    main()
+    return a, b, c
